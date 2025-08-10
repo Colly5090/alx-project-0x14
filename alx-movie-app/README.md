@@ -1,40 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# API Explorer: Mastering RESTful Connections
 
-## Getting Started
+CineSeek is a modern movie discovery application built with Next.js, TypeScript, and Tailwind CSS. The application allows users to browse movies from the MoviesDatabase API, view movie details, and search for films by year or genre. The project focuses on creating a responsive, well-structured web application with proper API integration and TypeScript typing.
 
-First, run the development server:
+## API Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This api provides complete and updated data for over 9 million movies, series and episodes titles and 11 million actors / crew and cast members. It involves the collection of information for movies, tv-shows, actors. Including youtube trailer url, awards, full biography, and many other usefull informations
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API Version
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+v1 (current)
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Available Endpoints
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+- Titles: This endpoint is used to get the title of series, movies, episodes and ratings.
+- Search: This let you get a movie by searching by imdb id, alias, title and a keyword.
+- Actors: This let you get available actors
+- Utils: This helps in searching by genres, list and titleTypes of utils
+- Obsolete: This allows crew and main actors to be searched
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Request and Response Format
 
-## Learn More
+### Request
 
-To learn more about Next.js, take a look at the following resources:
+This request uses GET method and includes the necessary headers for authentication and host information.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+| Field    | Value                           | Description                       |
+| -------- | ------------------------------- | --------------------------------- |
+| Method   | `GET`                           | Retrieves data                    |
+| Hostname | `moviesdatabase.p.rapidapi.com` | Base API hostname                 |
+| Headers  | `x-rapidapi-key`                | Your API Key for authentication   |
+|          | `x-rapidapi-host`               | Hostname for routing via RapidAPI |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Response
 
-## Deploy on Vercel
+A successful response will return a JSON object containing metadata and a list of movie titles.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+{
+"page": 1,
+"next": "/titles?page=2",
+"entries": 50,
+"results": [
+{
+"id": "tt0000001",
+"titleText": {
+"text": "Carmencita"
+},
+"titleType": {
+"text": "short"
+},
+"releaseYear": {
+"year": 1894
+}
+},
+{
+"id": "tt0000002",
+"titleText": {
+"text": "Le clown et ses chiens"
+},
+"titleType": {
+"text": "short"
+},
+"releaseYear": {
+"year": 1892
+}
+}
+]
+}
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+## Authentication
+
+In the GET request header the API key can be provided as a value to the 'x-rapidapi-key' key
+
+## Error Handling
+
+The Movies Database API may return error responses in cases of invalid requests, authentication issues, or exceeded rate limits. Below are common HTTP error statuses and how to handle them.
+
+| HTTP Status | Description           | Cause                                       |
+| ----------- | --------------------- | ------------------------------------------- |
+| 401         | Unauthorized          | Missing or invalid `x-rapidapi-key`         |
+| 403         | Forbidden             | Key does not have access or is rate-limited |
+| 404         | Not Found             | Invalid endpoint or resource                |
+| 429         | Too Many Requests     | Exceeded usage quota or rate limit          |
+| 500         | Internal Server Error | Problem on the server side                  |
+
+**Error Handling in Code Snippet**
+if (res.statusCode >= 200 && res.statusCode < 300) {
+console.log("Success:", JSON.parse(body));
+} else {
+console.error(`Error ${res.statusCode}:`, body);
+}
+
+## Usage Limits and Best Practices
+
+As part of RapidAPI’s platform, this API enforces usage limits based on our free tier subscription plan for this project.
+
+**Best Practices**
+
+- **Use Pagination:** When retrieving large datasets, use pagination to avoid overloading the server and staying within rate limits.
+
+- **Cache Responses:** Cache static data (like movie details) on your end to reduce repeated API calls.
+- **Monitor Usage:** Periodically check usage stats on RapidAPI to avoid unexpected cutoffs.
